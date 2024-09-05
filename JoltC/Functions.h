@@ -814,6 +814,9 @@ JPC_API void JPC_PhysicsSystem_DrawBodies(
 	JPC_DebugRendererSimple* inRenderer, // FIXME: un-specialize
 	const void* inBodyFilter); // FIXME: BodyDrawFilter
 
+JPC_API void JPC_PhysicsSystem_SetGravity(JPC_PhysicsSystem* self, JPC_Vec3 inGravity);
+JPC_API JPC_Vec3 JPC_PhysicsSystem_GetGravity(JPC_PhysicsSystem* self);
+
 #ifdef __cplusplus
 }
 #endif

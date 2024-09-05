@@ -1524,3 +1524,11 @@ JPC_API void JPC_PhysicsSystem_DrawBodies(
 {
 	to_jph(self)->DrawBodies(to_jph(*inSettings), to_jph(inRenderer), nullptr);
 }
+
+JPC_API void JPC_PhysicsSystem_SetGravity(JPC_PhysicsSystem* self, JPC_Vec3 inGravity) {
+	to_jph(self)->SetGravity(to_jph(inGravity));
+}
+
+JPC_API JPC_Vec3 JPC_PhysicsSystem_GetGravity(const JPC_PhysicsSystem* self) {
+	return to_jpc(to_jph(self)->GetGravity());
+}
