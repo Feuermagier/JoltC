@@ -588,6 +588,7 @@ typedef struct JPC_TransformedShape {
 	JPC_SubShapeIDCreator mSubShapeIDCreator;
 } JPC_TransformedShape;
 
+JPC_API void JPC_TransformedShape_SetWorldTransform(JPC_TransformedShape* self, JPC_RMat44 inTransform);
 
 ////////////////////////////////////////////////////////////////////////////////
 // Body

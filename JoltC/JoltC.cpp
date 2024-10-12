@@ -844,6 +844,13 @@ JPC_API void JPC_BodyCreationSettings_default(JPC_BodyCreationSettings* settings
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TransformedShape
+
+JPC_API void JPC_TransformedShape_SetWorldTransform(JPC_TransformedShape* self, JPC_RMat44 inTransform) {
+	to_jph(self)->SetWorldTransform(to_jph(inTransform));
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Body
 
 JPC_API JPC_BodyID JPC_Body_GetID(const JPC_Body* self) {
