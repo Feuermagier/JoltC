@@ -568,6 +568,28 @@ typedef struct JPC_BodyCreationSettings JPC_BodyCreationSettings;
 JPC_API JPC_BodyCreationSettings* JPC_BodyCreationSettings_new();
 
 ////////////////////////////////////////////////////////////////////////////////
+// TransformedShape
+
+typedef struct JPC_RefConst_Shape {
+	const JPC_Shape* Shape;
+} JPC_RefConst_Shape;
+
+typedef struct JPC_SubShapeIDCreator {
+	JPC_SubShapeID mID;
+	uint mCurrentBit;
+} JPC_SubShapeIDCreator;
+
+typedef struct JPC_TransformedShape {
+	JPC_RVec3 mShapePositionCOM;
+	JPC_Quat mShapeRotation;
+	JPC_RefConst_Shape mShape;
+	JPC_Float3 mShapeScale;
+	JPC_BodyID mBodyID;
+	JPC_SubShapeIDCreator mSubShapeIDCreator;
+} JPC_TransformedShape;
+
+
+////////////////////////////////////////////////////////////////////////////////
 // Body
 
 JPC_API JPC_BodyID JPC_Body_GetID(const JPC_Body* self);
@@ -654,7 +676,7 @@ JPC_API uint64_t JPC_Body_GetUserData(const JPC_Body* self);
 JPC_API void JPC_Body_SetUserData(JPC_Body* self, uint64_t inUserData);
 
 // JPC_API JPC_Vec3 JPC_Body_GetWorldSpaceSurfaceNormal(const JPC_Body* self, const SubShapeID &inSubShapeID, JPC_RVec3 inPosition);
-// JPC_API TransformedShape JPC_Body_GetTransformedShape(const JPC_Body* self);
+JPC_API JPC_TransformedShape JPC_Body_GetTransformedShape(const JPC_Body* self);
 // JPC_API BodyCreationSettings JPC_Body_GetBodyCreationSettings(const JPC_Body* self);
 // JPC_API SoftBodyCreationSettings JPC_Body_GetSoftBodyCreationSettings(const JPC_Body* self);
 
@@ -755,7 +777,7 @@ JPC_API float JPC_BodyInterface_GetGravityFactor(const JPC_BodyInterface *self, 
 JPC_API void JPC_BodyInterface_SetUseManifoldReduction(JPC_BodyInterface *self, JPC_BodyID inBodyID, bool inUseReduction);
 JPC_API bool JPC_BodyInterface_GetUseManifoldReduction(const JPC_BodyInterface *self, JPC_BodyID inBodyID);
 
-// TransformedShape JPC_BodyInterface_GetTransformedShape(const JPC_BodyInterface *self, JPC_BodyID inBodyID);
+JPC_API JPC_TransformedShape JPC_BodyInterface_GetTransformedShape(const JPC_BodyInterface *self, JPC_BodyID inBodyID);
 
 JPC_API uint64_t JPC_BodyInterface_GetUserData(const JPC_BodyInterface *self, JPC_BodyID inBodyID);
 JPC_API void JPC_BodyInterface_SetUserData(const JPC_BodyInterface *self, JPC_BodyID inBodyID, uint64_t inUserData);

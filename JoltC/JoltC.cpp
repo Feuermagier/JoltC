@@ -108,6 +108,8 @@ LAYOUT_COMPATIBLE(JPC_BodyManager_DrawSettings, JPH::BodyManager::DrawSettings)
 
 LAYOUT_COMPATIBLE(JPC_BodyID, JPH::BodyID)
 
+LAYOUT_COMPATIBLE(JPC_TransformedShape, JPH::TransformedShape)
+
 static auto to_jpc(JPH::BroadPhaseLayer in) { return in.GetValue(); }
 static auto to_jph(JPC_BroadPhaseLayer in) { return JPH::BroadPhaseLayer(in); }
 
@@ -1412,7 +1414,9 @@ JPC_API bool JPC_BodyInterface_GetUseManifoldReduction(const JPC_BodyInterface *
 	return to_jph(self)->GetUseManifoldReduction(to_jph(inBodyID));
 }
 
-// TransformedShape JPC_BodyInterface_GetTransformedShape(const JPC_BodyInterface *self, JPC_BodyID inBodyID);
+JPC_API JPC_TransformedShape JPC_BodyInterface_GetTransformedShape(const JPC_BodyInterface *self, JPC_BodyID inBodyID) {
+	return to_jpc(to_jph(self)->GetTransformedShape(to_jph(inBodyID)));
+}
 
 JPC_API uint64_t JPC_BodyInterface_GetUserData(const JPC_BodyInterface *self, JPC_BodyID inBodyID) {
 	return to_jph(self)->GetUserData(to_jph(inBodyID));
