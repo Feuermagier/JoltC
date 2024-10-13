@@ -468,25 +468,6 @@ JPC_API const char* JPC_String_c_str(JPC_String* self) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Shape
-
-JPC_API uint32_t JPC_Shape_GetRefCount(const JPC_Shape* self) {
-	return to_jph(self)->GetRefCount();
-}
-
-JPC_API void JPC_Shape_AddRef(const JPC_Shape* self) {
-	to_jph(self)->AddRef();
-}
-
-JPC_API void JPC_Shape_Release(const JPC_Shape* self) {
-	to_jph(self)->Release();
-}
-
-JPC_API JPC_Vec3 JPC_Shape_GetCenterOfMass(const JPC_Shape* self) {
-	return to_jpc(to_jph(self)->GetCenterOfMass());
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // ShapeSettings
 
 // Unpack a ShapeResult into a bool and two pointers to be friendlier to C.
@@ -506,6 +487,30 @@ static bool HandleShapeResult(JPH::ShapeSettings::ShapeResult res, JPC_Shape** o
 		return true;
 	}
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Shape
+
+JPC_API uint32_t JPC_Shape_GetRefCount(const JPC_Shape* self) {
+	return to_jph(self)->GetRefCount();
+}
+
+JPC_API void JPC_Shape_AddRef(const JPC_Shape* self) {
+	to_jph(self)->AddRef();
+}
+
+JPC_API void JPC_Shape_Release(const JPC_Shape* self) {
+	to_jph(self)->Release();
+}
+
+JPC_API JPC_Vec3 JPC_Shape_GetCenterOfMass(const JPC_Shape* self) {
+	return to_jpc(to_jph(self)->GetCenterOfMass());
+}
+
+JPC_API bool JPC_Shape_ScaleShape(const JPC_Shape* self, JPC_Vec3 inScale, JPC_Shape** outShape, JPC_String** outError) {
+	return HandleShapeResult(to_jph(self)->ScaleShape(to_jph(inScale)), outShape, outError);
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // TriangleShapeSettings
