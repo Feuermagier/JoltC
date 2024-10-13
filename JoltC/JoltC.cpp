@@ -104,11 +104,15 @@ DESTRUCTOR(JPC_IndexedTriangleList)
 OPAQUE_WRAPPER(JPC_String, JPH::String)
 DESTRUCTOR(JPC_String)
 
+
 LAYOUT_COMPATIBLE(JPC_BodyManager_DrawSettings, JPH::BodyManager::DrawSettings)
 
 LAYOUT_COMPATIBLE(JPC_BodyID, JPH::BodyID)
 
 LAYOUT_COMPATIBLE(JPC_TransformedShape, JPH::TransformedShape)
+
+OPAQUE_WRAPPER(JPC_SharedMutex, JPH::SharedMutex)
+OPAQUE_WRAPPER(JPC_BodyLockInterface, JPH::BodyLockInterface)
 
 static auto to_jpc(JPH::BroadPhaseLayer in) { return in.GetValue(); }
 static auto to_jph(JPC_BroadPhaseLayer in) { return JPH::BroadPhaseLayer(in); }
@@ -1476,6 +1480,49 @@ JPC_API bool JPC_NarrowPhaseQuery_CastRay(const JPC_NarrowPhaseQuery* self, JPC_
 	}
 
 	return hit;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// BodyLockInterface
+
+JPC_API const JPC_BodyLockInterface* JPC_PhysicsSystem_GetBodyLockInterface(JPC_PhysicsSystem* self) {
+	return to_jpc(&to_jph(self)->GetBodyLockInterface());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// BodyLockRead
+
+JPC_API JPC_BodyLockRead JPC_BodyLockRead_new(const JPC_BodyLockInterface* inBodyLockInterface, const JPC_BodyID bodyID) {
+	if (to_jph(bodyID) == JPH::BodyID()) {
+		return JPC_BodyLockRead {
+			.mBodyLockInterface = inBodyLockInterface,
+			.mBodyLockMutex = nullptr,
+			.mBody = nullptr,
+		};
+	} else {
+		return JPC_BodyLockRead {
+			.mBodyLockInterface = inBodyLockInterface,
+			.mBodyLockMutex = to_jpc(to_jph(inBodyLockInterface)->LockRead(to_jph(bodyID))),
+			.mBody = to_jpc(to_jph(inBodyLockInterface)->TryGetBody(to_jph(bodyID))),
+		};
+	}
+}
+
+JPC_API bool JPC_BodyLockRead_Succeeded(const JPC_BodyLockRead* self) {
+	return self->mBody != nullptr;
+}
+
+JPC_API const JPC_Body* JPC_BodyLockRead_GetBody(const JPC_BodyLockRead* self) {
+	// JPH_ASSERT(self->mBody != nullptr, "Should check Succeeded() first");
+	return self->mBody;
+}
+
+JPC_API void JPC_BodyLockRead_ReleaseLock(JPC_BodyLockRead* self) {
+	if (self->mBodyLockMutex != nullptr) {
+		to_jph(self->mBodyLockInterface)->UnlockRead(to_jph(self->mBodyLockMutex));
+		self->mBodyLockMutex = nullptr;
+		self->mBody = nullptr;
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////

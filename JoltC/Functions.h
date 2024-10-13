@@ -803,6 +803,28 @@ typedef struct JPC_NarrowPhaseQuery_CastRayArgs {
 JPC_API bool JPC_NarrowPhaseQuery_CastRay(const JPC_NarrowPhaseQuery* self, JPC_NarrowPhaseQuery_CastRayArgs* args);
 
 ////////////////////////////////////////////////////////////////////////////////
+// BodyLockInterface
+
+typedef struct JPC_BodyLockInterface JPC_BodyLockInterface;
+
+////////////////////////////////////////////////////////////////////////////////
+// BodyLockRead
+
+typedef struct JPC_SharedMutex JPC_SharedMutex;
+
+typedef struct JPC_BodyLockRead {
+	// JPH::BodyLockRead lock;
+	const JPC_BodyLockInterface* mBodyLockInterface;
+	JPC_SharedMutex* mBodyLockMutex;
+	JPC_Body* mBody;
+} JPC_BodyLockRead;
+
+JPC_API JPC_BodyLockRead JPC_BodyLockRead_new(const JPC_BodyLockInterface* inBodyLockInterface, const JPC_BodyID bodyID);
+JPC_API bool JPC_BodyLockRead_Succeeded(const JPC_BodyLockRead* self);
+JPC_API const JPC_Body* JPC_BodyLockRead_GetBody(const JPC_BodyLockRead* self);
+JPC_API void JPC_BodyLockRead_ReleaseLock(JPC_BodyLockRead* self);
+
+////////////////////////////////////////////////////////////////////////////////
 // PhysicsSystem
 
 typedef struct JPC_PhysicsSystem JPC_PhysicsSystem;
@@ -829,6 +851,8 @@ JPC_API JPC_PhysicsUpdateError JPC_PhysicsSystem_Update(
 	JPC_JobSystemThreadPool *inJobSystem); // FIXME: un-specialize
 
 JPC_API JPC_BodyInterface* JPC_PhysicsSystem_GetBodyInterface(JPC_PhysicsSystem* self);
+
+JPC_API const JPC_BodyLockInterface* JPC_PhysicsSystem_GetBodyLockInterface(JPC_PhysicsSystem* self);
 
 JPC_API const JPC_NarrowPhaseQuery* JPC_PhysicsSystem_GetNarrowPhaseQuery(const JPC_PhysicsSystem* self);
 
