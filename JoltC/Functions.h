@@ -816,7 +816,6 @@ typedef struct JPC_BodyLockInterface JPC_BodyLockInterface;
 typedef struct JPC_SharedMutex JPC_SharedMutex;
 
 typedef struct JPC_BodyLockRead {
-	// JPH::BodyLockRead lock;
 	const JPC_BodyLockInterface* mBodyLockInterface;
 	JPC_SharedMutex* mBodyLockMutex;
 	JPC_Body* mBody;
@@ -826,6 +825,20 @@ JPC_API JPC_BodyLockRead JPC_BodyLockRead_new(const JPC_BodyLockInterface* inBod
 JPC_API bool JPC_BodyLockRead_Succeeded(const JPC_BodyLockRead* self);
 JPC_API const JPC_Body* JPC_BodyLockRead_GetBody(const JPC_BodyLockRead* self);
 JPC_API void JPC_BodyLockRead_ReleaseLock(JPC_BodyLockRead* self);
+
+////////////////////////////////////////////////////////////////////////////////
+// BodyLockWrite
+
+typedef struct JPC_BodyLockWrite {
+	const JPC_BodyLockInterface* mBodyLockInterface;
+	JPC_SharedMutex* mBodyLockMutex;
+	JPC_Body* mBody;
+} JPC_BodyLockWrite;
+
+JPC_API JPC_BodyLockWrite JPC_BodyLockWrite_new(const JPC_BodyLockInterface* inBodyLockInterface, const JPC_BodyID bodyID);
+JPC_API bool JPC_BodyLockWrite_Succeeded(const JPC_BodyLockWrite* self);
+JPC_API JPC_Body* JPC_BodyLockWrite_GetBody(const JPC_BodyLockWrite* self);
+JPC_API void JPC_BodyLockWrite_ReleaseLock(JPC_BodyLockWrite* self);
 
 ////////////////////////////////////////////////////////////////////////////////
 // PhysicsSystem

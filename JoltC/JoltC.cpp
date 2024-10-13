@@ -1531,6 +1531,42 @@ JPC_API void JPC_BodyLockRead_ReleaseLock(JPC_BodyLockRead* self) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// BodyLockWrite
+
+JPC_API JPC_BodyLockWrite JPC_BodyLockWrite_new(const JPC_BodyLockInterface* inBodyLockInterface, const JPC_BodyID bodyID) {
+	if (to_jph(bodyID) == JPH::BodyID()) {
+		return JPC_BodyLockWrite {
+			.mBodyLockInterface = inBodyLockInterface,
+			.mBodyLockMutex = nullptr,
+			.mBody = nullptr,
+		};
+	} else {
+		return JPC_BodyLockWrite {
+			.mBodyLockInterface = inBodyLockInterface,
+			.mBodyLockMutex = to_jpc(to_jph(inBodyLockInterface)->LockWrite(to_jph(bodyID))),
+			.mBody = to_jpc(to_jph(inBodyLockInterface)->TryGetBody(to_jph(bodyID))),
+		};
+	}
+}
+
+JPC_API bool JPC_BodyLockWrite_Succeeded(const JPC_BodyLockWrite* self) {
+	return self->mBody != nullptr;
+}
+
+JPC_API JPC_Body* JPC_BodyLockWrite_GetBody(const JPC_BodyLockWrite* self) {
+	// JPH_ASSERT(self->mBody != nullptr, "Should check Succeeded() first");
+	return self->mBody;
+}
+
+JPC_API void JPC_BodyLockWrite_ReleaseLock(JPC_BodyLockWrite* self) {
+	if (self->mBodyLockMutex != nullptr) {
+		to_jph(self->mBodyLockInterface)->UnlockWrite(to_jph(self->mBodyLockMutex));
+		self->mBodyLockMutex = nullptr;
+		self->mBody = nullptr;
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // PhysicsSystem
 
 JPC_API JPC_PhysicsSystem* JPC_PhysicsSystem_new() {
