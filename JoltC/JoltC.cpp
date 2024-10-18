@@ -16,6 +16,7 @@
 #include <Jolt/Physics/Collision/Shape/SphereShape.h>
 #include <Jolt/Physics/Collision/Shape/StaticCompoundShape.h>
 #include <Jolt/Physics/Collision/Shape/TriangleShape.h>
+#include <Jolt/Physics/Collision/Shape/RotatedTranslatedShape.h>
 #include <Jolt/Physics/PhysicsSettings.h>
 #include <Jolt/Physics/PhysicsSystem.h>
 #include <Jolt/RegisterTypes.h>
@@ -94,6 +95,9 @@ DESTRUCTOR(JPC_JobSystemThreadPool)
 
 OPAQUE_WRAPPER(JPC_Shape, JPH::Shape)
 OPAQUE_WRAPPER(JPC_Body, JPH::Body)
+OPAQUE_WRAPPER(JPC_ShapeSettings, JPH::ShapeSettings)
+LAYOUT_COMPATIBLE(JPC_RefConst_Shape, JPH::RefConst<JPH::Shape>)
+LAYOUT_COMPATIBLE(JPC_RefConst_ShapeSettings, JPH::RefConst<JPH::ShapeSettings>)
 
 OPAQUE_WRAPPER(JPC_VertexList, JPH::VertexList)
 DESTRUCTOR(JPC_VertexList)
@@ -696,6 +700,46 @@ JPC_API void JPC_ConvexHullShapeSettings_default(JPC_ConvexHullShapeSettings* ob
 
 JPC_API bool JPC_ConvexHullShapeSettings_Create(const JPC_ConvexHullShapeSettings* self, JPC_Shape** outShape, JPC_String** outError) {
 	JPH::ConvexHullShapeSettings settings;
+	to_jph(self, &settings);
+
+	return HandleShapeResult(settings.Create(), outShape, outError);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// RotatedTranslatedShapeSettings
+
+static void to_jph(const JPC_RotatedTranslatedShapeSettings* input, JPH::RotatedTranslatedShapeSettings* output) {
+	output->mUserData = input->UserData;
+
+	output->mInnerShape = to_jph(input->InnerShape);
+	output->mInnerShapePtr = to_jph(input->InnerShapePtr);
+
+	output->mPosition = to_jph(input->Position);
+	output->mRotation = to_jph(input->Rotation);
+}
+
+static void to_jpc(const JPH::RotatedTranslatedShapeSettings* input, JPC_RotatedTranslatedShapeSettings* output) {
+	output->UserData = input->mUserData;
+
+	output->InnerShape = to_jpc(input->mInnerShape);
+	output->InnerShapePtr = to_jpc(input->mInnerShapePtr);
+
+	output->Position = to_jpc(input->mPosition);
+	output->Rotation = to_jpc(input->mRotation);
+}
+
+JPC_API void JPC_RotatedTranslatedShapeSettings_new_from_settings(JPC_Vec3 position, JPC_Quat rotation, const JPC_ShapeSettings* shape, JPC_RotatedTranslatedShapeSettings* out) {
+	JPH::RotatedTranslatedShapeSettings settings(to_jph(position), to_jph(rotation), to_jph(shape));
+	to_jpc(&settings, out);
+}
+
+JPC_API void JPC_RotatedTranslatedShapeSettings_new_from_shape(JPC_Vec3 position, JPC_Quat rotation, const JPC_Shape* shape, JPC_RotatedTranslatedShapeSettings* out) {
+	JPH::RotatedTranslatedShapeSettings settings(to_jph(position), to_jph(rotation), to_jph(shape));
+	to_jpc(&settings, out);
+}
+
+JPC_API bool JPC_RotatedTranslatedShapeSettings_Create(const JPC_RotatedTranslatedShapeSettings* self, JPC_Shape** outShape, JPC_String** outError) {
+	JPH::RotatedTranslatedShapeSettings settings;
 	to_jph(self, &settings);
 
 	return HandleShapeResult(settings.Create(), outShape, outError);

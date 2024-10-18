@@ -479,6 +479,37 @@ JPC_API void JPC_ConvexHullShapeSettings_default(JPC_ConvexHullShapeSettings* ob
 JPC_API bool JPC_ConvexHullShapeSettings_Create(const JPC_ConvexHullShapeSettings* self, JPC_Shape** outShape, JPC_String** outError);
 
 ////////////////////////////////////////////////////////////////////////////////
+// RotatedTranslatedShapeSettings -> DecoratedShapeSettings -> ShapeSettings
+
+typedef struct JPC_ShapeSettings JPC_ShapeSettings;
+
+typedef struct JPC_RefConst_ShapeSettings {
+	const JPC_ShapeSettings* Shape;
+} JPC_RefConst_ShapeSettings;
+
+typedef struct JPC_RefConst_Shape {
+	const JPC_Shape* Shape;
+} JPC_RefConst_Shape;
+
+typedef struct JPC_RotatedTranslatedShapeSettings {
+	// ShapeSettings
+	uint64_t UserData;
+
+	// DecoratedShapeSettings
+	JPC_RefConst_ShapeSettings InnerShape;
+	JPC_RefConst_Shape InnerShapePtr;
+
+	// RotatedTranslatedShapeSettings
+	JPC_Vec3 Position;
+	JPC_Quat Rotation;
+} JPC_RotatedTranslatedShapeSettings;
+
+JPC_API void JPC_RotatedTranslatedShapeSettings_new_from_settings(JPC_Vec3 position, JPC_Quat rotation, const JPC_ShapeSettings* shape, JPC_RotatedTranslatedShapeSettings* out);
+JPC_API void JPC_RotatedTranslatedShapeSettings_new_from_shape(JPC_Vec3 position, JPC_Quat rotation, const JPC_Shape* shape, JPC_RotatedTranslatedShapeSettings* out);
+JPC_API bool JPC_RotatedTranslatedShapeSettings_Create(const JPC_RotatedTranslatedShapeSettings* self, JPC_Shape** outShape, JPC_String** outError);
+
+
+////////////////////////////////////////////////////////////////////////////////
 // CompoundShape::SubShapeSettings
 
 typedef struct JPC_SubShapeSettings {
@@ -572,10 +603,6 @@ JPC_API JPC_BodyCreationSettings* JPC_BodyCreationSettings_new();
 
 ////////////////////////////////////////////////////////////////////////////////
 // TransformedShape
-
-typedef struct JPC_RefConst_Shape {
-	const JPC_Shape* Shape;
-} JPC_RefConst_Shape;
 
 typedef struct JPC_SubShapeIDCreator {
 	JPC_SubShapeID mID;
