@@ -504,8 +504,8 @@ typedef struct JPC_RotatedTranslatedShapeSettings {
 	JPC_Quat Rotation;
 } JPC_RotatedTranslatedShapeSettings;
 
-JPC_API void JPC_RotatedTranslatedShapeSettings_new_from_settings(JPC_Vec3 position, JPC_Quat rotation, const JPC_ShapeSettings* shape, JPC_RotatedTranslatedShapeSettings* out);
-JPC_API void JPC_RotatedTranslatedShapeSettings_new_from_shape(JPC_Vec3 position, JPC_Quat rotation, const JPC_Shape* shape, JPC_RotatedTranslatedShapeSettings* out);
+JPC_API JPC_RotatedTranslatedShapeSettings JPC_RotatedTranslatedShapeSettings_new_from_settings(JPC_Vec3 position, JPC_Quat rotation, const JPC_ShapeSettings* shape);
+JPC_API JPC_RotatedTranslatedShapeSettings JPC_RotatedTranslatedShapeSettings_new_from_shape(JPC_Vec3 position, JPC_Quat rotation, const JPC_Shape* shape);
 JPC_API bool JPC_RotatedTranslatedShapeSettings_Create(const JPC_RotatedTranslatedShapeSettings* self, JPC_Shape** outShape, JPC_String** outError);
 
 
